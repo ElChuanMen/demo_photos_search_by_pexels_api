@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Photo Search App</string>
+    <string name="app_name_Dev">Dev Photo Search</string>
+    <string name="common_error">Oops! Something went wrong. Please try again later.</string>
+    <string name="network_error">Network connection lost, please try again!</string>
+    <string name="title_home">Free Photos Search</string>
+    <string name="text_hit_search">Enter search keyword...</string>
+</resources>
