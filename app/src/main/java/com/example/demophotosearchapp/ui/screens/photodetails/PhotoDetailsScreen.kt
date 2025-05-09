@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -37,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -44,11 +46,14 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter.State.Empty.painter
+import com.el.mybasekotlin.data.state.DataState
 import com.example.demophotosearchapp.R
 import com.example.demophotosearchapp.data.model.Photo
 import com.example.demophotosearchapp.ui.screens.home.HomeViewModel
@@ -62,86 +67,122 @@ import com.example.demophotosearchapp.ui.screens.home.MainContent
  */
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun PhotoDetailsScreens(homeViewModel: HomeViewModel,
+fun PhotoDetailsScreens(
+    homeViewModel: HomeViewModel,
     modifier: Modifier = Modifier,
     onNavigateTo: (String) -> Unit,
     onBackStack: () -> Unit, sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope, photo: Photo,  maxScale: Float = 4f,
+    animatedVisibilityScope: AnimatedVisibilityScope, photo: Photo, maxScale: Float = 4f,
     minScale: Float = 1f
 ) {
+    var showLoading by remember { mutableStateOf(false) }
     var scale by remember { mutableFloatStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
     var offsetX by remember { mutableStateOf(0f) }
     var offsetY by remember { mutableStateOf(0f) }
-    with(sharedTransitionScope) {
-        Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
 
-        Box(
-            modifier = modifier
-                .pointerInput(Unit) {
-                    detectTransformGestures { centroid, pan, zoom, rotation ->
-                        scale = (scale * zoom).coerceIn(minScale, maxScale)
-                        if (scale > 1f) {
-                            offsetX += pan.x
-                            offsetY += pan.y
-                        } else {
-                            offsetX = 0f
-                            offsetY = 0f
+    /**
+     * Download State Listener
+     */
+    val downloadStatus by homeViewModel.downloadMediaState.collectAsStateWithLifecycle()
+    when (downloadStatus) {
+        DataState.Empty -> {
+            showLoading = false
+        }
+
+        is DataState.Error -> {}
+        DataState.Loading -> {
+            showLoading = true
+        }
+
+        is DataState.Success -> {}
+    }
+
+    with(sharedTransitionScope) {
+        Box {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black)
+                    .blur(if (showLoading) 30.dp else 0.dp)
+            ) {
+
+                Box(
+                    modifier = modifier
+                        .pointerInput(Unit) {
+                            detectTransformGestures { centroid, pan, zoom, rotation ->
+                                scale = (scale * zoom).coerceIn(minScale, maxScale)
+                                if (scale > 1f) {
+                                    offsetX += pan.x
+                                    offsetY += pan.y
+                                } else {
+                                    offsetX = 0f
+                                    offsetY = 0f
+                                }
+                            }
                         }
-                    }
-                }
-        ) {
-                AsyncImage(
-                    model = photo.src.large,
-                    placeholder = ColorPainter(Color.LightGray),
-                    contentDescription = "Photo",
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.graphicsLayer(
-                        scaleX = scale.coerceIn(1f, 5f),
-                        scaleY = scale.coerceIn(1f, 5f),
-                        translationX = offset.x,
-                        translationY = offset.y
+                ) {
+                    //Details Image by large2x or original
+                    AsyncImage(
+                        model = photo.src.large2x,
+                        placeholder = ColorPainter(Color.LightGray),
+                        contentDescription = "Photo",
+                        contentScale = ContentScale.Fit,
+
+                        modifier = Modifier
+                            .graphicsLayer(
+                                scaleX = scale.coerceIn(1f, 5f),
+                                scaleY = scale.coerceIn(1f, 5f),
+                                translationX = offset.x,
+                                translationY = offset.y
+                            )
+                            .fillMaxSize()
+                            .aspectRatio(photo.width.toFloat() / photo.height.toFloat())
+                            .sharedElement(
+                                rememberSharedContentState(key = photo.id),
+                                animatedVisibilityScope = animatedVisibilityScope
+                            )
                     )
-                        .fillMaxSize()
-                        .aspectRatio(photo.width.toFloat() / photo.height.toFloat())
-                       .sharedElement(
-                            rememberSharedContentState( key = photo.id),
-                            animatedVisibilityScope = animatedVisibilityScope
+                }
+
+
+                Image(
+                    painter = painterResource(id = R.drawable.ic_back),
+                    contentDescription = "Back Button",
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .padding(
+                            top = dimensionResource(R.dimen.size_10),
+                            start = dimensionResource(R.dimen.size_12)
                         )
+                        .size(32.dp)
+                        .clickable {
+                            onBackStack.invoke()
+                        }
+                        .align(Alignment.TopStart)
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.ic_download),
+                    contentDescription = "Back Button",
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .padding(
+                            top = dimensionResource(R.dimen.size_10),
+                            end = dimensionResource(R.dimen.size_12)
+                        )
+                        .size(32.dp)
+                        .clickable {
+                            homeViewModel.downloadMedia(photo.src.original)
+                        }
+                        .align(Alignment.TopEnd)
                 )
             }
-
-
-            Image(
-                painter = painterResource(id = R.drawable.ic_back),
-                contentDescription = "Back Button",
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .padding(
-                        top = dimensionResource(R.dimen.size_10),
-                        start = dimensionResource(R.dimen.size_12)
-                    )
-                    .size(32.dp)
-                    .clickable {
-                        onBackStack.invoke()
-                    }
-                    .align(Alignment.TopStart)
-            )
-            Image(
-                painter = painterResource(id = R.drawable.ic_download),
-                contentDescription = "Back Button",
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .padding(
-                        top = dimensionResource(R.dimen.size_10),
-                        end = dimensionResource(R.dimen.size_12)
-                    )
-                    .size(32.dp)
-                    .clickable {
-                       homeViewModel.downloadMedia(photo.src.original)
-                    }
-                    .align(Alignment.TopEnd)
-            )
+            if (showLoading)
+                CircularProgressIndicator(
+                    color = colorResource(R.color.teal_200),
+                    modifier = Modifier.align(Alignment.Center)
+                )
         }
+
     }
 }

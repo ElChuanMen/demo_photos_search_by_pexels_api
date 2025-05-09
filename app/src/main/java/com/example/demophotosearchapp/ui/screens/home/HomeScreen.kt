@@ -86,6 +86,7 @@ import coil3.compose.AsyncImage
 import com.example.demophotosearchapp.data.model.Photo
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -102,6 +103,7 @@ import com.example.demophotosearchapp.ui.component.rememberKeyboardVisibility
 import com.example.demophotosearchapp.ui.screens.photodetails.PhotoDetailsScreens
 import com.example.demophotosearchapp.ui.theme.beVietNamSemibold
 import com.example.demophotosearchapp.utils.extension.color
+import kotlinx.coroutines.launch
 
 @OptIn(
     ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
@@ -209,7 +211,7 @@ fun MainContent(homeViewModel: HomeViewModel,
     val searchData = homeViewModel.dataPhotoSearch
 //    var selected by rememberSaveable { mutableStateOf("All") }
 
-
+    val coroutineScope = rememberCoroutineScope()
     val hintText = stringResource(R.string.text_hit_search)
     var isLoading by remember { mutableStateOf(false) }
     var refreshing by remember { mutableStateOf(true) }
@@ -268,6 +270,9 @@ fun MainContent(homeViewModel: HomeViewModel,
             textSearch,
             orientation = selected.takeIf { it != "All" } ?: "")
         AppPreferences.saveSearchQueryJson(textSearch)
+        coroutineScope.launch {
+            listState.scrollToItem(0)
+        }
 
     }
     Box(modifier = Modifier.fillMaxSize()) {
