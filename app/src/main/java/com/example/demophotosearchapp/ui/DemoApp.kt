@@ -31,10 +31,6 @@ fun DemoApp() {
     val context = LocalContext.current
     val blurRequest by globalViewModel.globalBlur.collectAsStateWithLifecycle()
     val navController = rememberEventAppNavController()
-    val networkListener by globalViewModel.networkActive.collectAsStateWithLifecycle()
-    LaunchedEffect(networkListener) {
-//        globalViewModel.requestGlobalBlur(networkListener.not())
-    }
     DemoPhotoSearchAppTheme {
         NavHost(
             navController = navController.navController,

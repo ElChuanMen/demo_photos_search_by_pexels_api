@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.demophotosearchapp.data.constant.Constant.DATABASE_NAME
 
 object DatabaseBuilder {
 
@@ -24,7 +25,7 @@ object DatabaseBuilder {
         Room.databaseBuilder(
             context.applicationContext,
             AppDatabase::class.java,
-            "vccorp-ticket"
+            DATABASE_NAME
         ).addMigrations(MIGRATION_1_2).allowMainThreadQueries().fallbackToDestructiveMigration().build()
 
 }

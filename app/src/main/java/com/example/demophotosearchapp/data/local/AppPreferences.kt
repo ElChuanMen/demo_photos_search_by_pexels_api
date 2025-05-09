@@ -3,6 +3,7 @@ package com.example.demophotosearchapp.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.demophotosearchapp.data.constant.Constant
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.json.JSONArray
@@ -15,7 +16,7 @@ import timber.log.Timber
  * Mail :doanvanquang146@gmail.com
  */
 object AppPreferences {
-    const val NAME = "Demo_searches"
+    const val NAME = Constant.APP_PREFERENCE_NAME
     const val MODE = Context.MODE_PRIVATE
     lateinit var preferences: SharedPreferences
 

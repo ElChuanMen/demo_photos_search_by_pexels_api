@@ -50,7 +50,6 @@ fun SplashScreen(
     navController: DemoAppNavController,
     onBackStack: () -> Unit
 ) {
-
     var progress by remember { mutableStateOf(0f) }
     LaunchedEffect(Unit) {
 
@@ -60,8 +59,6 @@ fun SplashScreen(
         }
         navController.popNavigateTo(Destinations.Home.route)
     }
-
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -73,28 +70,6 @@ fun SplashScreen(
             modifier = Modifier
                 .fillMaxSize(),      contentScale = ContentScale.Crop,
         )
-//        Text(
-//            text = "Welcome To Demo Application",
-//            style = MaterialTheme.typography.headlineMedium,
-//            modifier = Modifier.align(Alignment.Center)
-//        )
-//
-////        Slider(
-////            value = sliderPosition,
-////            onValueChange = { sliderPosition = it },
-////            modifier = Modifier
-////                .align(Alignment.BottomCenter)
-////                .padding(horizontal = 32.dp, vertical = 60.dp)
-////        )
-//        LinearProgressIndicator(
-//            progress = { progress },
-//            modifier = Modifier
-//                .align(Alignment.BottomCenter)
-//                .padding(horizontal = dimensionResource(R.dimen.size_32), vertical = dimensionResource(R.dimen.size_60))
-//                .fillMaxWidth()
-//                .height(dimensionResource(R.dimen.size_8)).clip(RoundedCornerShape(dimensionResource(R.dimen.size_50))),
-//            color = MaterialTheme.colorScheme.error,
-//        )
     }
 }
 

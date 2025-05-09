@@ -447,7 +447,7 @@ fun MainContent(homeViewModel: HomeViewModel,
 
                                 keyboardController?.hide()
                             } else Toast.makeText(
-                                context, "Please input the key word.", Toast.LENGTH_LONG
+                                context, context.getString(R.string.please_input_the_key_word), Toast.LENGTH_LONG
                             ).show()
 
                         }),
