@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import com.example.demophotosearchapp.ui.animation.fadeInAnimation
 import com.example.demophotosearchapp.ui.screens.home.HomeScreen
 import com.example.demophotosearchapp.ui.screens.SplashScreen
+import com.example.demophotosearchapp.ui.screens.photodetails.PhotoDetailsScreens
 import com.example.demophotosearchapp.ui.theme.DemoPhotoSearchAppTheme
 /**
  * Created by ElChuanmen on 5/5/2025.
@@ -54,6 +55,7 @@ fun DemoApp() {
                     onBackStack = { navController.upPress() }, onExit = { (context as? Activity)?.finish() }
                 )
             }
+
         }
     }
 }

@@ -35,7 +35,7 @@ android {
             useSupportLibrary = true
         }
         val buildDate = SimpleDateFormat("ddMMyy_HHmm").format(Date())
-        setProperty("archivesBaseName", "Demo_base_kotlin_build_${versionName}_${buildDate}")
+        setProperty("archivesBaseName", "Demo_Photo_Search_build_${versionName}_${buildDate}")
 //        ndk {
 //            abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a")) // Kotlin syntax
 //        }
@@ -122,6 +122,7 @@ dependencies {
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.material3)
 
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -129,6 +130,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+
+
     // Dagger - Hilt
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)

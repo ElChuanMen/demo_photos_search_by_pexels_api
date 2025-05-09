@@ -1,8 +1,11 @@
 <resources>
-    <string name="app_name">Photo Search App</string>
+    <string name="app_name">Pexels Photo Search App</string>
     <string name="app_name_Dev">Dev Photo Search</string>
     <string name="common_error">Oops! Something went wrong. Please try again later.</string>
     <string name="network_error">Network connection lost, please try again!</string>
     <string name="title_home">Free Photos Search</string>
     <string name="text_hit_search">Enter search keyword...</string>
+    <string name="no_results_found">No results found</string>
+    <string name="download_media_complete">Saved to your device at %s</string>
+    <string name="download_media_failed">Download failed. Please try again later.</string>
 </resources>

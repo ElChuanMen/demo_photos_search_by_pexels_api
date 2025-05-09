@@ -8,21 +8,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.demophotosearchapp.ui.DemoApp
 import com.example.demophotosearchapp.ui.GlobalViewModel
 import com.example.demophotosearchapp.ui.LocalGlobalViewModel
-import com.example.demophotosearchapp.ui.theme.DemoPhotoSearchAppTheme
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val TAG: String = "MainActivity"

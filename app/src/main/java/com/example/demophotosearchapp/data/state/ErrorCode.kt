@@ -12,8 +12,10 @@ enum class ErrorCode(val code: String) {
     WRONG_OTP("103"),
     SIGN_IN_ANOTHER_DEVICE("104"),
     TOKEN_EXPIRED("401"),
-    AUTHENTICATION_FAILED("123s")
+    AUTHENTICATION_FAILED("123s"),
+    DATA_NOT_FOUND("404"),
 }
+
 enum class  ResponseCode(val code : Int) {
     SERVER_ERROR(0),
     SERVER_SUCCESS(1)

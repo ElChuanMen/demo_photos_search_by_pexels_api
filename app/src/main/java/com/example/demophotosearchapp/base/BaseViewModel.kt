@@ -129,35 +129,6 @@ abstract class BaseViewModel(
         jobCall?.cancel()
     }
 
-    /**
-     * QuangDV edit area here
-     */
-    open fun <T> otherExceptions(exception: Throwable, data: MutableStateFlow<DataState<T>>) {
-        when (exception) {
-            is NetworkCheckerInterceptor.NoConnectivityException -> {
-                data.value = DataState.Error(
-                    ErrorCode.NO_INTERNET.code,
-                    message = app.applicationContext.getString(R.string.network_error),
-                    isException = false
-                )
-            }
-
-            else -> {
-                Timber.e(
-                    "Handler IOException ${exception.message} " + app.applicationContext.getString(
-                        R.string.common_error
-                    )
-                )
-                data.value = DataState.Error(
-                    400.toString(),
-                    message = app.applicationContext.getString(
-                        R.string.common_error
-                    ),
-                    isException = true
-                )
-            }
-        }
-    }
 
     /**
      * @param T MutableStateFlow data
@@ -222,6 +193,7 @@ abstract class BaseViewModel(
                     val errorMessage = errorObject.optString("message", "Unknown error")
                     data.value =
                         DataState.Error(errorCode.toString(), errorMessage, isException = true)
+
                     data.value = DataState.Empty
                     return
                 }
@@ -239,89 +211,41 @@ abstract class BaseViewModel(
             Timber.e("flowCatch  otherExceptions" + exception.message)
             otherExceptions(exception, data)
         }
+//        data.value = DataState.Empty
+    }
+
+
+    /**
+     * QuangDV edit area here
+     */
+    open fun <T> otherExceptions(exception: Throwable, data: MutableStateFlow<DataState<T>>) {
+        when (exception) {
+            is NetworkCheckerInterceptor.NoConnectivityException -> {
+                data.value = DataState.Error(
+                    ErrorCode.NO_INTERNET.code,
+                    message = app.applicationContext.getString(R.string.network_error),
+                    isException = false
+                )
+            }
+
+            else -> {
+                Timber.e(
+                    "Handler IOException ${exception.message} " + app.applicationContext.getString(
+                        R.string.common_error
+                    )
+                )
+                data.value = DataState.Error(
+                    400.toString(),
+                    message = app.applicationContext.getString(
+                        R.string.common_error
+                    ),
+                    isException = true
+                )
+            }
+        }
+
         data.value = DataState.Empty
     }
 
-
-    //Response catch error
-    open fun <T> errorCatch(
-        baseDataResponse: BaseDataResponse<T>,
-        data: MutableStateFlow<DataState<T>>, tag:String=""
-    ) {
-        Timber.d("responseCatch $tag : ${baseDataResponse.errorCode}")
-        if (baseDataResponse.errorCode.equals("7")) {
-            Timber.d("responseCatch $tag : Send BroadCast to force logout")
-            //ToDO call action force logout
-            val intent = Intent(ErrorAction.ACTION_FORCE_LOGOUT)
-            intent.setPackage("com.el.mybasekotlin")
-            app.applicationContext.sendBroadcast(intent) // Send broadcast
-
-        } else {
-            data.value = DataState.Error(
-                code = baseDataResponse.errorCode.toString(),
-                message = baseDataResponse.message
-            )
-        }
-
-
-    }
-
-    // flow catch
-    open suspend fun flowCatchComposeTest(
-        exception: Throwable,
-        data: MutableSharedFlow<Any>,
-        isLastIdleStatus: Boolean = true
-    ) {
-        Timber.e("flowCatch  HttpException ${exception.message}")
-        if (exception is HttpException) {
-            val errorResponse = exception.response()?.errorBody()?.string()
-            try {
-
-                if (errorResponse != null) {
-                    val errorObject = JSONObject(errorResponse)
-                    val errorCode = errorObject.optInt("error_code", -1)
-//                    if (errorCode == 404) {
-                    val errorMessage = errorObject.optString("message", "Unknown error")
-                    data.emit(DataState.Error(errorMessage, errorCode.toString()))
-                    if (isLastIdleStatus) {
-                        delay(100)
-                        data.emit(DataState.Empty)
-                    }
-                    return
-
-                }
-            } catch (e: Exception) {
-                Timber.e("flowCatch  Exception2  ${exception.message}")
-                data.emit(DataState.Error(exception.message?.toString(), 0.toString()))
-                if (isLastIdleStatus) {
-                    delay(100)
-                    data.emit(DataState.Empty)
-                }
-//                data.value = e.message?.toString()?.let { DataSate.error(null, 0, it) }!!
-//                data.value = DataSate.nothing()
-            }
-
-
-        } else {
-            Timber.e("flowCatch  otherExceptions " + exception.message)
-//            otherExceptions(exception, data)
-            data.emit(
-                DataState.Error(
-                    exception.message, 0.toString()
-                )
-            )
-//            data.emit(
-//                RequestState.Error(
-//                    app.applicationContext.getString(
-//                        R.string.common_error
-//                    ), 0
-//                )
-//            )
-
-        }
-        data.emit(DataState.Empty)
-        return
-
-    }
 
 }

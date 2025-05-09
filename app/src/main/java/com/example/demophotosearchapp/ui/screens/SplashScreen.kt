@@ -2,7 +2,9 @@ package com.example.demophotosearchapp.ui.screens
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
@@ -27,8 +31,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,10 +54,10 @@ fun SplashScreen(
     var progress by remember { mutableStateOf(0f) }
     LaunchedEffect(Unit) {
 
-//        for (i in 1..120) {
-//            delay(10)
-//            progress = i / 120f
-//        }
+        for (i in 1..200) {
+            delay(10)
+            progress = i / 200f
+        }
         navController.popNavigateTo(Destinations.Home.route)
     }
 
@@ -61,29 +67,34 @@ fun SplashScreen(
             .fillMaxSize()
             .background(Color.White)
     ) {
-
-        Text(
-            text = "Welcome To Demo Application",
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.align(Alignment.Center)
+        Image(
+            painter = painterResource(id = R.drawable.bg),
+            contentDescription = "Back Button",
+            modifier = Modifier
+                .fillMaxSize(),      contentScale = ContentScale.Crop,
         )
-
-//        Slider(
-//            value = sliderPosition,
-//            onValueChange = { sliderPosition = it },
+//        Text(
+//            text = "Welcome To Demo Application",
+//            style = MaterialTheme.typography.headlineMedium,
+//            modifier = Modifier.align(Alignment.Center)
+//        )
+//
+////        Slider(
+////            value = sliderPosition,
+////            onValueChange = { sliderPosition = it },
+////            modifier = Modifier
+////                .align(Alignment.BottomCenter)
+////                .padding(horizontal = 32.dp, vertical = 60.dp)
+////        )
+//        LinearProgressIndicator(
+//            progress = { progress },
 //            modifier = Modifier
 //                .align(Alignment.BottomCenter)
-//                .padding(horizontal = 32.dp, vertical = 60.dp)
+//                .padding(horizontal = dimensionResource(R.dimen.size_32), vertical = dimensionResource(R.dimen.size_60))
+//                .fillMaxWidth()
+//                .height(dimensionResource(R.dimen.size_8)).clip(RoundedCornerShape(dimensionResource(R.dimen.size_50))),
+//            color = MaterialTheme.colorScheme.error,
 //        )
-        LinearProgressIndicator(
-            progress = { progress },
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(horizontal = dimensionResource(R.dimen.size_32), vertical = dimensionResource(R.dimen.size_60))
-                .fillMaxWidth()
-                .height(dimensionResource(R.dimen.size_8)).clip(RoundedCornerShape(dimensionResource(R.dimen.size_50))),
-            color = MaterialTheme.colorScheme.error,
-        )
     }
 }
 

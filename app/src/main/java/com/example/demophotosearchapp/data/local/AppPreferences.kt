@@ -5,6 +5,8 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import org.json.JSONArray
+import timber.log.Timber
 
 /**
  * Created by ElChuanmen on 7/16/2024.
@@ -13,7 +15,7 @@ import com.google.gson.reflect.TypeToken
  * Mail :doanvanquang146@gmail.com
  */
 object AppPreferences {
-    const val NAME = "MY_BASE_KOTLIN"
+    const val NAME = "Demo_searches"
     const val MODE = Context.MODE_PRIVATE
     lateinit var preferences: SharedPreferences
 
@@ -23,6 +25,7 @@ object AppPreferences {
     private val NIGHT_MODE_PREF = Pair("NIGHT_MODE_PREF", AppCompatDelegate.MODE_NIGHT_YES)
     private val LOCALE_STRING_PREF = Pair("LOCALE_STRING_PREF", "en")
     private val ACCESS_TOKEN_PREF = Pair("ACCESS_TOKEN_PREF", "")
+    private val SEARCH_HISTORY= Pair("SEARCH_HISTORY", "")
 
     fun init(context: Context) {
         preferences = context.getSharedPreferences(NAME, MODE)
@@ -38,6 +41,38 @@ object AppPreferences {
         editor?.clear()
         editor?.apply()
     }
+    fun saveSearchQueryJson(newQuery: String) {
+
+        val json = preferences.getString("search_history_json", "[]")
+        val history = JSONArray(json)
+        val list = mutableListOf<String>()
+
+        for (i in 0 until history.length()) {
+            list.add(history.getString(i))
+        }
+
+        list.remove(newQuery)
+        list.add(0, newQuery)
+        val trimmed = list.take(5)
+
+        val newJson = JSONArray(trimmed).toString()
+        preferences.edit().putString("search_history_json", newJson).apply()
+    }
+
+    fun getSearchHistoryJson(): List<String> {
+
+        val json = preferences.getString("search_history_json", "[]")
+        val history = JSONArray(json)
+        val list = mutableListOf<String>()
+        for (i in 0 until history.length()) {
+            list.add(history.getString(i))
+        }
+        return list
+    }
+
+
+
+
 
     inline fun <reified T> save(key: String, any: T) {
         val editor = preferences.edit()
